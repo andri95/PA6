@@ -29,28 +29,28 @@ class LinkedList:
         self.tail = node
         self.size += 1
 
-    # adds new node at the front of list
-    def push_front(self, data):
-        node = Node(data)
-        if self.head == None:
-            self.head = node
+    def find(self, data):
+        curr = self.head
+        while curr != None:
+            if curr.data == data:
+                curr.reveal = True
+                return True
+            curr = curr.next
+        return False
 
-        else:
-            node.next = self.head
-            self.head = node
+    def reveal_status(self):
+        curr = self.head
+        while curr != None:
+            if curr.reveal == False:
+                return False
+            curr = curr.next
+        return True
 
-        self.size += 1
-
-    # removes first node, returns node.data
-    def pop_front(self):
-        if self.size == 0:
-            return None
-        else:
-            curr = self.head
-            self.head = self.head.next
-            curr.next = None
-            self.size -= 1
-            return curr.data
+    def reveal_all(self):
+        curr = self.head
+        while curr != None:
+            curr.reveal = True
+            curr = curr.next
 
     # returns size of list
     def get_size(self):
@@ -62,8 +62,8 @@ class LinkedList:
         ret_str = ''
         while curr != None:
             if curr.reveal == True:
-                ret_str += str(curr.data) + ' '
+                ret_str += str(curr.data)
             else:
-                ret_str += '- ' 
+                ret_str += '-' 
             curr = curr.next
         return ret_str

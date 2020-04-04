@@ -3,11 +3,12 @@ from linkedlist import LinkedList
 import random
 
 class Hangman:
-    def __init__(self):
+    def __init__(self, user):
+        self.user = user
         self.words = HashMap()
-        self.games = LinkedList()
         self.wins = 0
         self.losses = 0
+        self.games = []
         self.guessLimit = 6
         self.keys = 0
         self.display = '''
@@ -18,27 +19,34 @@ class Hangman:
          O   |    3. High scores
         /|\  |    4. Past games
         / \  |    5. Add words
-             |    6. Quit
+             |    6. Log out
      =========
           Wins: {W} Losses: {L}
 ++++++++++++++++++++++++++++++++++++'''
         self.initialize()
-        self.start()
 
     def initialize(self):
+        self.wins = int(self.user.wins)
+        self.losses = int(self.user.losses)
+        self.games = self.user.games
         counter = 0
         with open('word_bank.txt', 'r') as wb:
             for line in wb:
                 self.words.insert(counter, line.strip())
                 counter += 1
         self.keys = counter + 1
+        self.start()
 
     def start(self):
         print(self.display.format(W=self.wins, L=self.losses))
-        actions = {'1': self.play, '2': self.set_limit, '3': self.get_highScores, '4': self.get_pastGames, '5': self.add_words, '6': self.quit}
+        actions = {'1': self.play, '2': self.set_limit, '3': self.get_highScores, '4': self.get_pastGames, '5': self.add_words}
         action = input('Choose option: ')
         if action in actions:
             actions[action]()
+
+        elif action == '6':
+            print('fer inn')
+            return
 
         else:
             print('Invalid input!')
@@ -98,7 +106,8 @@ class Hangman:
         pass
 
     def get_pastGames(self):
-        pass
+        print('\n'.join(self.games))
+        self.start()
 
     def add_words(self):
         word = input('Enter new word: ')
@@ -111,7 +120,7 @@ class Hangman:
         self.start()
 
     def quit(self):
-        print('Thank you for playing!')
+        return
 
     def get_word(self):
         randomKey = random.randint(0, self.keys)

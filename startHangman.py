@@ -59,9 +59,9 @@ class MainMenu:
                 counter = 0
                 for line in uf:
                     if counter == 0:
-                        selectedUser.wins = line.strip()
+                        selectedUser.wins = int(line.strip())
                     elif counter == 1:
-                        selectedUser.losses = line.strip()
+                        selectedUser.losses = int(line.strip())
                     else:
                         selectedUser.games.append(line.strip())
                     counter += 1

@@ -1,10 +1,11 @@
 from hangmanInstance import Hangman
 
 class User:
-    def __init__(self, username = 'guest', wins = 0, losses = 0, games = []):
+    def __init__(self, username = 'guest', wins = 0, losses = 0, totalScore = 0, games = []):
         self.username = username
         self.wins = wins
         self.losses = losses
+        self.totalScore = totalScore
         self.games = games
 
 class MainMenu:

@@ -6,6 +6,7 @@ class Hangman:
     def __init__(self, user):
         self.user = user
         self.words = HashMap()
+        self.highScores = []
         self.guessLimit = 6
         self.keys = 0
         self.display = '''
@@ -31,6 +32,9 @@ class Hangman:
             for line in wb:
                 self.words.insert(counter, line.strip())
                 counter += 1
+        with open('highScores.txt', 'r') as hs:
+            for line in hs:
+                self.highScores.append(line.strip())
         self.keys = counter + 1
         self.start()
 
@@ -59,29 +63,32 @@ class Hangman:
             guess = input('Input letter: ')
             if len(guess) > 1:
                 if guess == word:
-                    self.user.wins += 1
                     score += 5
+                    self.user.wins += 1
+                    self.user.totalScore += score
                     print('Correct, you won!')
                     self.user.games.append('word = {}, score = {}'.format(word, score))
-                    self.storeGame('W', word, score)
+                    self.storeGame(word, score)
                     self.start()
                 else:
                     print('Incorrect, you lost!')
                     self.user.losses += 1
+                    self.user.totalScore += score
                     word_list.reveal_all()
                     print('The word was "{}"'.format(word))
                     self.user.games.append('word = {}, score = {}'.format(word, score))
-                    self.storeGame('L', word, score)
+                    self.storeGame(word, score)
                     self.start()
             else:
                 if word_list.find(guess) == True:
                     if word_list.reveal_status() == True:
                         print('Correct, you won!')
                         self.user.wins += 1
+                        self.user.totalScore += score
                         word_list.reveal_all()
                         print('The word was "{}"'.format(word))
                         self.user.games.append('word = {}, score = {}'.format(word, score))
-                        self.storeGame('W', word, score)
+                        self.storeGame(word, score)
                         self.start()
                     else:
                         print('Correct!')
@@ -93,18 +100,25 @@ class Hangman:
 
         print('You lost!')
         self.user.losses += 1
+        self.user.totalScore += score
         word_list.reveal_all()
         print('The word was "{}"'.format(word_list))
         self.user.games.append('word = {}, score = {}'.format(word, score))
-        self.storeGame('L', word, score)
+        self.storeGame(word, score)
         self.start()
 
-    def storeGame(self, winLoss, word, score):
+    def storeGame(self, word, score):
         with open('{}.txt'.format(self.user.username), 'w') as uf:
             uf.write(str(self.user.wins) + '\n')
             uf.write(str(self.user.losses) + '\n')
             for game in self.user.games:
                 uf.write(game + '\n')
+
+    def update_highScores(self):
+        with open('highScores.txt', 'w') as hs:
+            
+            for highScore in self.highScores:
+                hs.write('')
 
     def set_limit(self):
         print('Current guess limit: {}'.format(self.guessLimit))

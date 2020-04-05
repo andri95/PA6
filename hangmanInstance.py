@@ -39,7 +39,7 @@ class Hangman:
                 if temp[2] not in self.highScores:
                     self.highScores[temp[2]] = [temp[0], temp[1]]
                 else:
-                    self.highScores[temp[2]].append(temp[0], temp[1])
+                    self.highScores[temp[2]].append(temp[1])
         self.keys = counter - 1
 
     def start(self):
@@ -114,14 +114,22 @@ class Hangman:
         with open('{}.txt'.format(self.user.username), 'w') as uf:
             uf.write(str(self.user.wins) + '\n')
             uf.write(str(self.user.losses) + '\n')
+            uf.write(str(self.user.totalScore) + '\n')
             for game in self.user.games:
                 print(game)
                 uf.write(game + '\n')
 
     def update_highScores(self):
         with open('highScores.txt', 'w') as hs:
-            for highScore in self.highScores:
-                pass
+            for highScore in sorted(self.highScores):
+                if len(self.highScores[highScore]) > 2:
+                    hs.write('{}:{}:{}\n'.format(self.highScores[highScore][0],
+                                                    self.highScores[highScore][1], highScore))
+                    hs.write('{}:{}:{}\n'.format(self.highScores[highScore][0],
+                                                    self.highScores[highScore][2], highScore))
+                else:
+                    hs.write('{}:{}:{}\n'.format(self.highScores[highScore][0],
+                                                            self.highScores[highScore][1], highScore))
 
     def set_limit(self):
         print('Current guess limit: {}'.format(self.guessLimit))
@@ -133,16 +141,14 @@ class Hangman:
             self.set_limit()
 
     def get_highScores(self):
-        print('{:<10}{:<15}{:<12}'.format('Username', 'Games played', 'Total Score'))
-        for highScore in self.highScores:
+        for highScore in sorted(self.highScores):
             if len(self.highScores[highScore]) > 2:
-                counter = 0
-                for user in self.highScores[highScore]:
-                    if counter % 2 == 0 and counter > 1:
-                        print('{:<10}{:<15}{:<12}'.format(self.highScores[highScore][counter - 1],
-                                                        self.highScores[highScore][counter], highScore))
+                print('{} {} {}'.format(self.highScores[highScore][0],
+                                                self.highScores[highScore][1], highScore))
+                print('{} {} {}'.format(self.highScores[highScore][0],
+                                                self.highScores[highScore][2], highScore))
             else:
-                print('{:<10}{:<15}{:<12}'.format(self.highScores[highScore][0],
+                print('{} {} {}'.format(self.highScores[highScore][0],
                                                         self.highScores[highScore][1], highScore))
 
     def get_pastGames(self):

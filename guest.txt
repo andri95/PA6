@@ -1,5 +1,7 @@
 1
 3
+11
+4
 word = preference, score = 5
 word = beer, score = 0
 word = beverage, score = 0

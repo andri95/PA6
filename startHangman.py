@@ -1,11 +1,10 @@
 from hangmanInstance import Hangman
 
 class User:
-    def __init__(self, username = 'guest', wins = 0, losses = 0, totalScore = 0, games = []):
+    def __init__(self, username = 'guest', wins = 0, losses = 0, games = []):
         self.username = username
         self.wins = wins
         self.losses = losses
-        self.totalScore = totalScore
         self.games = games
 
 class MainMenu:
@@ -64,8 +63,6 @@ class MainMenu:
                         selectedUser.wins = int(line.strip())
                     elif counter == 1:
                         selectedUser.losses = int(line.strip())
-                    elif counter == 2:
-                        selectedUser.totalScore = int(line.strip())
                     else:
                         selectedUser.games.append(line.strip())
                     counter += 1

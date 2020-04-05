@@ -1,5 +1,6 @@
-1
+2
 2
 word = preference, score = 5
 word = beer, score = 0
 word = beverage, score = 0
+word = attention, score = 10

@@ -3,4 +3,4 @@
 word = preference, score = 5
 word = beer, score = 0
 word = beverage, score = 0
-word = industry, score = 7
+word = transportation, score = 6

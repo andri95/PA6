@@ -58,11 +58,14 @@ class MainMenu:
             selectedUser = User()
             with open('{}.txt'.format(self.users[action]), 'r') as uf:
                 counter = 0
+                selectedUser.username = self.users[action]
                 for line in uf:
                     if counter == 0:
                         selectedUser.wins = int(line.strip())
                     elif counter == 1:
                         selectedUser.losses = int(line.strip())
+                    elif counter == 2:
+                        selectedUser.totalScore = int(line.strip())
                     else:
                         selectedUser.games.append(line.strip())
                     counter += 1

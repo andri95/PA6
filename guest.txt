@@ -1,6 +1,0 @@
-1
-3
-word = preference, score = 5
-word = beer, score = 0
-word = beverage, score = 0
-word = transportation, score = 6

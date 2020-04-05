@@ -1,2 +1,7 @@
-guest:transportation:6
+guest:thanks:3
+guest:apartment:3
+guest:computer:4
 guest:preference:5
+guest:protection:5
+guest:transportation:6
+guest:attention:9

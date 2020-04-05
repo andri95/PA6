@@ -11,13 +11,13 @@ class Hangman:
         self.keys = 0
         self.display = '''
 ++++++++++++++++++++++++++++++++++++
-              HANGMAN 
+               {U} 
          +---+    1. Play
          |   |    2. Set guess limit
          O   |    3. High scores
         /|\  |    4. Past games
-        / \  |    5. Add words
-             |    6. Log out
+        / \  |    5. Log out
+             |    
      =========
           Wins: {W} Losses: {L}
 ++++++++++++++++++++++++++++++++++++'''
@@ -27,7 +27,6 @@ class Hangman:
     def initialize(self):
         self.wins = int(self.user.wins)
         self.losses = int(self.user.losses)
-        self.games = self.user.games
         counter = 0
         with open('word_bank.txt', 'r') as wb:
             for line in wb:
@@ -44,13 +43,14 @@ class Hangman:
 
     def start(self):
         while True:
-            print(self.display.format(W=self.wins, L=self.losses))
-            actions = {'1': self.play, '2': self.set_limit, '3': self.get_highScores, '4': self.get_pastGames, '5': self.add_words}
+            print(self.display.format(U=self.user.username, W=self.wins, L=self.losses))
+            actions = {'1': self.play, '2': self.set_limit, '3': self.get_highScores, '4': self.get_pastGames}
             action = input('Choose option: ')
             if action in actions:
                 actions[action]()
 
-            elif action == '6':
+            elif action == '5':
+                self.user.games = []
                 return
 
             else:
@@ -65,22 +65,25 @@ class Hangman:
             print('\nGuessed letters: {} Guesses left: {}'.format(', '.join(guessed), (self.guessLimit - guesses)))
             print(word_list)
             guess = input('Input letter: ')
-            if len(guess) > 1:
-                if guess == word:
-                    return self.guessWordCheck(1, score, word_list, word)
-                else:
-                    return self.guessWordCheck(0, score, word_list, word)
-            else:
-                if word_list.find(guess) == True:
-                    if word_list.reveal_status() == True:
-                        return self.guessWordCheck(2, score, word_list, word)
+            if guess not in guessed:
+                if len(guess) > 1:
+                    if guess == word:
+                        return self.guessWordCheck(1, score, word_list, word)
                     else:
-                        print('Correct!')
-                        score += 1
+                        return self.guessWordCheck(0, score, word_list, word)
                 else:
-                    print('Incorrect!')
-                    guesses += 1
-                    guessed.append(guess)
+                    if word_list.find(guess) == True:
+                        if word_list.reveal_status() == True:
+                            return self.guessWordCheck(2, score, word_list, word)
+                        else:
+                            print('Correct!')
+                            score += 1
+                    else:
+                        print('Incorrect!')
+                        guesses += 1
+                        guessed.append(guess)
+            else:
+                print('You have already guessed that letter!')
  
         return self.guessWordCheck(0, score, word_list, word)
  
@@ -106,24 +109,24 @@ class Hangman:
         self.user.games.append('word = {}, score = {}'.format(word, score))
         self.storeGame(word, score)
         if str(score) not in self.highScores:
-            self.highScores[str(score)] = [[self.user.usernamename, word]]
+            self.highScores[str(score)] = [[self.user.username, word]]
         else:
             self.highScores[str(score)].append([self.user.username, word])
+        self.update_highScores()
 
     def storeGame(self, word, score):
-        print(self.user.username)
-        with open('{}.txt'.format(self.user.username), 'w') as uf:
-            uf.write(str(self.user.wins) + '\n')
-            uf.write(str(self.user.losses) + '\n')
-            for game in self.user.games:
-                print(game)
-                uf.write(game + '\n')
+        if self.user.username != 'guest':
+            with open('{}.txt'.format(self.user.username), 'w') as uf:
+                uf.write(str(self.user.wins) + '\n')
+                uf.write(str(self.user.losses) + '\n')
+                for game in self.user.games:
+                    uf.write(game + '\n')
 
     def update_highScores(self):
         with open('highScores.txt', 'w') as hs:
             for highScore in sorted(self.highScores):
-                if len(self.highScores[highScore]) > 2:
-                    for game in self.highScores[highScore]:
+                if len(self.highScores[highScore]) > 1:
+                    for game in range(len(self.highScores[highScore])):
                         hs.write('{}:{}:{}\n'.format(self.highScores[highScore][game][0],
                                                         self.highScores[highScore][game][1], highScore))
                 else:
@@ -140,26 +143,19 @@ class Hangman:
             self.set_limit()
 
     def get_highScores(self):
-        for highScore in self.highScores:
-            if len(self.highScores[highScore]) > 2:
-                for game in self.highScores[highScore]:
-                    print('{} {} {}'.format(self.highScores[highScore][game][0],
+        print('{:<12}{:<18}{:<8}'.format('Username', 'Word', 'Score'))
+        for highScore in sorted(self.highScores.keys(), reverse=True):
+            if len(self.highScores[highScore]) > 1:
+                for game in range(len(self.highScores[highScore])):
+                    print('{:<12}{:<18}{:<8}'.format(self.highScores[highScore][game][0],
                                                     self.highScores[highScore][game][1], highScore))
             else:
-                print('{} {} {}'.format(self.highScores[highScore][0][0],
+                print('{:<12}{:<18}{:<8}'.format(self.highScores[highScore][0][0],
                                                         self.highScores[highScore][0][1], highScore))
 
     def get_pastGames(self):
-        print('\n'.join(self.games))
-
-    def add_words(self):
-        word = input('Enter new word: ')
-        for letter in word:
-            if not letter.isalpha():
-                print('The word must only contain alphabetic letters!')
-                self.add_words()
-        with open('word_bank.txt', 'a') as wb:
-            wb.write('\n' + word)
+        print('\nPast games:')
+        print('\n'.join(self.user.games))
 
     def get_word(self):
         randomKey = random.randint(0, self.keys)

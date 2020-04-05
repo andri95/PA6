@@ -30,3 +30,6 @@ skill
 preference
 beer
 beverage
+game
+computer
+violet

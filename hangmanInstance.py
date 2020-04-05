@@ -37,9 +37,9 @@ class Hangman:
             for line in hs:
                 temp = line.strip().split(':')
                 if temp[2] not in self.highScores:
-                    self.highScores[temp[2]] = [temp[0], temp[1]]
+                    self.highScores[temp[2]] = [[temp[0], temp[1]]]
                 else:
-                    self.highScores[temp[2]].append(temp[1])
+                    self.highScores[temp[2]].append([temp[0], temp[1]])
         self.keys = counter - 1
 
     def start(self):
@@ -89,32 +89,32 @@ class Hangman:
             score += 5
             self.user.wins += 1
             self.wins = self.user.wins
-            self.user.totalScore += score
             print('Correct, you won!')
         elif check == 2:
             print('Correct, you won!')
             self.user.wins += 1
             self.wins = self.user.wins
-            self.user.totalScore += score
             word_list.reveal_all()
             print('The word was "{}"'.format(word))
         else:
             print('You lost!')
             self.user.losses += 1
             self.losses = self.user.losses
-            self.user.totalScore += score
             word_list.reveal_all()
             print('The word was "{}"'.format(word))
        
         self.user.games.append('word = {}, score = {}'.format(word, score))
         self.storeGame(word, score)
+        if str(score) not in self.highScores:
+            self.highScores[str(score)] = [[self.user.usernamename, word]]
+        else:
+            self.highScores[str(score)].append([self.user.username, word])
 
     def storeGame(self, word, score):
         print(self.user.username)
         with open('{}.txt'.format(self.user.username), 'w') as uf:
             uf.write(str(self.user.wins) + '\n')
             uf.write(str(self.user.losses) + '\n')
-            uf.write(str(self.user.totalScore) + '\n')
             for game in self.user.games:
                 print(game)
                 uf.write(game + '\n')
@@ -123,33 +123,31 @@ class Hangman:
         with open('highScores.txt', 'w') as hs:
             for highScore in sorted(self.highScores):
                 if len(self.highScores[highScore]) > 2:
-                    hs.write('{}:{}:{}\n'.format(self.highScores[highScore][0],
-                                                    self.highScores[highScore][1], highScore))
-                    hs.write('{}:{}:{}\n'.format(self.highScores[highScore][0],
-                                                    self.highScores[highScore][2], highScore))
+                    for game in self.highScores[highScore]:
+                        hs.write('{}:{}:{}\n'.format(self.highScores[highScore][game][0],
+                                                        self.highScores[highScore][game][1], highScore))
                 else:
-                    hs.write('{}:{}:{}\n'.format(self.highScores[highScore][0],
-                                                            self.highScores[highScore][1], highScore))
+                    hs.write('{}:{}:{}\n'.format(self.highScores[highScore][0][0],
+                                                            self.highScores[highScore][0][1], highScore))
 
     def set_limit(self):
         print('Current guess limit: {}'.format(self.guessLimit))
         newLimit = input('Enter new guess limit: ')
         if newLimit.isdigit():
-            self.guessLimit = newLimit
+            self.guessLimit = int(newLimit)
         else:
             print('Invalid input!')
             self.set_limit()
 
     def get_highScores(self):
-        for highScore in sorted(self.highScores):
+        for highScore in self.highScores:
             if len(self.highScores[highScore]) > 2:
-                print('{} {} {}'.format(self.highScores[highScore][0],
-                                                self.highScores[highScore][1], highScore))
-                print('{} {} {}'.format(self.highScores[highScore][0],
-                                                self.highScores[highScore][2], highScore))
+                for game in self.highScores[highScore]:
+                    print('{} {} {}'.format(self.highScores[highScore][game][0],
+                                                    self.highScores[highScore][game][1], highScore))
             else:
-                print('{} {} {}'.format(self.highScores[highScore][0],
-                                                        self.highScores[highScore][1], highScore))
+                print('{} {} {}'.format(self.highScores[highScore][0][0],
+                                                        self.highScores[highScore][0][1], highScore))
 
     def get_pastGames(self):
         print('\n'.join(self.games))

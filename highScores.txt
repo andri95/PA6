@@ -1,4 +1,2 @@
-user1:attention:10
 guest:transportation:6
 guest:preference:5
-user1:preference:5

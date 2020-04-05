@@ -59,6 +59,7 @@ class MainMenu:
                 counter = 0
                 selectedUser.username = self.users[action]
                 for line in uf:
+
                     if counter == 0:
                         selectedUser.wins = int(line.strip())
                     elif counter == 1:
@@ -74,7 +75,8 @@ class MainMenu:
 
     def create_user(self):
         newUser = input('New username: ')
-        newUserF = open('{}.txt'.format(newUser),'w+')
+        with open('{}.txt'.format(newUser),'w+') as newUserF:
+            newUserF.write('0\n0\n')
         with open(self.path, 'a') as f:
             f.write('\n')
             f.write(newUser)

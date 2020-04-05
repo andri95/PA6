@@ -30,13 +30,14 @@ class LinkedList:
         self.size += 1
 
     def find(self, data):
+        flag = False
         curr = self.head
         while curr != None:
             if curr.data == data:
                 curr.reveal = True
-                return True
+                flag = True
             curr = curr.next
-        return False
+        return flag
 
     def reveal_status(self):
         curr = self.head
